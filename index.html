@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>قهوه‌یار</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: phone-width app shell, espresso header, white product cards, amber as the only accent */
+:root{
+  --ink:#2a1b14;
+  --bean:#4a2e20;
+  --amber:#d98324;
+  --paper:#f4f2ee;
+  --card:#ffffff;
+  --line:#e6e0d7;
+  --muted:#7b6e64;
+  --good:#2f7d4f;
+  --warn:#b4531a;
+  --font:'Vazirmatn',Tahoma,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#e9e5de;font-family:var(--font);color:var(--ink);font-size:15px;line-height:1.7}
+button,input{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.app{height:100%;max-width:480px;margin:0 auto;background:var(--paper);display:flex;flex-direction:column;position:relative;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+header{background:var(--ink);color:#f6efe6;padding:14px 18px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header h1{font-size:20px;font-weight:800;letter-spacing:0}
+header small{display:block;font-size:12px;color:#cdbfae;font-weight:400}
+.chip-wallet{background:#3a271d;border:1px solid #5a3d2c;color:#f6efe6;border-radius:20px;padding:4px 12px;font-size:13px;white-space:nowrap}
+main{flex:1;overflow-y:auto;padding:16px 16px 24px}
+h2{font-size:17px;font-weight:700;margin-bottom:10px}
+.muted{color:var(--muted);font-size:13px}
+.cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin:0 -16px;padding-inline:16px}
+.cat{flex:none;padding:6px 14px;border-radius:20px;border:1px solid var(--line);background:var(--card);font-size:14px}
+.cat[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.prod{display:flex;flex-direction:column;gap:6px}
+.prod .ico{height:64px;display:flex;align-items:center;justify-content:center;background:var(--paper);border-radius:10px}
+.prod h3{font-size:15px;font-weight:700;line-height:1.4}
+.prod .price{font-weight:700;font-size:14px}
+.prod .price span{font-weight:400;color:var(--muted);font-size:12px}
+.btn{background:var(--amber);color:#2a1b14;font-weight:700;border-radius:10px;padding:8px 14px;text-align:center;width:100%}
+.btn.dark{background:var(--ink);color:#fff}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);font-weight:500}
+.btn.small{width:auto;padding:5px 12px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;align-items:center;gap:10px}
+.row.between{justify-content:space-between}
+.grow{flex:1;min-width:0}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.stepper button{width:32px;height:32px;font-size:18px;line-height:1}
+.stepper b{min-width:30px;text-align:center;font-weight:700}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--good);border-radius:6px}
+.bar i.low{background:var(--warn)}
+.tag{display:inline-block;font-size:12px;padding:1px 10px;border-radius:12px;background:#f1e4d0;color:#7a4a12;font-weight:500}
+.tag.low{background:#f7ddd0;color:var(--warn)}
+.tag.ok{background:#dcefe3;color:var(--good)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{padding:6px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+input[type=tel],input[type=text]{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;direction:ltr;text-align:left}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
+.switch{position:relative;width:46px;height:26px;border-radius:14px;background:#cfc7bb;flex:none;transition:background .15s}
+.switch::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:inset-inline-start .15s}
+.switch[aria-checked="true"]{background:var(--good)}
+.switch[aria-checked="true"]::after{inset-inline-start:23px}
+.sms{background:#e8f0e3;border:1px solid #cfe0c6;border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:14px;line-height:1.8}
+.big{font-size:30px;font-weight:800;line-height:1.3}
+.code{direction:ltr;font-family:ui-monospace,Menlo,monospace;font-size:20px;font-weight:700;letter-spacing:1px;background:var(--paper);border:1px dashed #b9ad9d;border-radius:10px;padding:8px 14px;text-align:center}
+.tx{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.tx:last-child{border-bottom:0}
+.plus{color:var(--good);font-weight:700}
+.minus{color:var(--warn);font-weight:700}
+nav{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{padding:9px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:12px;color:var(--muted);position:relative}
+nav button[aria-current="page"]{color:var(--ink);font-weight:700}
+nav button[aria-current="page"]::before{content:"";position:absolute;top:0;inset-inline:28%;height:3px;background:var(--amber);border-radius:0 0 3px 3px}
+nav svg{width:22px;height:22px}
+.badge{position:absolute;top:4px;inset-inline-start:calc(50% + 6px);background:var(--amber);color:#2a1b14;border-radius:10px;font-size:11px;font-weight:800;min-width:18px;height:18px;line-height:18px;text-align:center;padding:0 4px}
+.modal{position:absolute;inset:0;background:rgba(30,18,12,.6);display:flex;align-items:flex-end;z-index:10}
+.sheet{background:#fff;width:100%;border-radius:20px 20px 0 0;padding:20px 18px 24px}
+.fake{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--muted);direction:ltr;text-align:left;font-size:14px}
+.toast{position:absolute;bottom:78px;inset-inline:16px;background:var(--ink);color:#fff;border-radius:12px;padding:10px 14px;font-size:14px;text-align:center;z-index:20;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none}
+.toast.on{opacity:1;transform:none}
+.note{font-size:12px;color:var(--muted);text-align:center;padding:10px 0 0}
+.empty{text-align:center;padding:36px 12px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- داده‌ها ---------- */
+var COMMISSION = 30000; // پورسانت هر معرفی موفق، تومان
+var PRODUCTS = [
+  {id:'masala', name:'چای ماسالا', sub:'پودر ۵۰۰ گرمی', cat:'چای', price:185000, cups:40, color:'#b86a1f'},
+  {id:'karak', name:'چای کرک', sub:'بسته ۲۰ ساشه', cat:'چای', price:220000, cups:20, color:'#c98a3d'},
+  {id:'instant', name:'قهوه فوری', sub:'قوطی ۲۰۰ گرمی', cat:'قهوه', price:310000, cups:100, color:'#3b2418'},
+  {id:'gold', name:'قهوه گلد', sub:'قوطی ۱۰۰ گرمی', cat:'قهوه', price:420000, cups:50, color:'#5a3520'},
+  {id:'threein', name:'۳ در ۱', sub:'جعبه ۳۰ ساشه', cat:'پودرهای فوری', price:175000, cups:30, color:'#8a5a38'},
+  {id:'mix', name:'کافی میکس', sub:'جعبه ۲۴ ساشه', cat:'پودرهای فوری', price:160000, cups:24, color:'#9a6b46'},
+  {id:'caramel', name:'کارامل ماکیاتو', sub:'جعبه ۱۰ ساشه', cat:'نوشیدنی‌های ویژه', price:210000, cups:10, color:'#c58a4a'},
+  {id:'mocha', name:'موکا', sub:'جعبه ۱۰ ساشه', cat:'نوشیدنی‌های ویژه', price:195000, cups:10, color:'#5b3a2c'},
+  {id:'hotchoc', name:'هات چاکلت', sub:'جعبه ۱۰ ساشه', cat:'نوشیدنی‌های ویژه', price:190000, cups:10, color:'#47261c'},
+  {id:'latte', name:'لاته', sub:'جعبه ۱۰ ساشه', cat:'نوشیدنی‌های ویژه', price:185000, cups:10, color:'#b9966f'}
+];
+var CATS = ['همه','چای','قهوه','پودرهای فوری','نوشیدنی‌های ویژه'];
+var DAY = 86400000;
+var now = Date.now();
+
+var S = {
+  tab:'shop', cat:'همه', cart:{}, wallet:0, useWallet:false, gateway:false,
+  cons:{}, phone:'', smsOn:true, interval:14,
+  myCode:'GHAHVE-4821', refs:[], tx:[],
+  orders:[
+    {id:1001, date:now-10*DAY, items:[{id:'karak',qty:1},{id:'caramel',qty:1}], total:430000, sample:true}
+  ]
+};
+try{
+  var saved = JSON.parse(localStorage.getItem('ghahveyar-demo')||'null');
+  if(saved && saved.v===1){ for(var k in saved.s){ S[k]=saved.s[k]; } }
+}catch(e){}
+function save(){ try{ localStorage.setItem('ghahveyar-demo', JSON.stringify({v:1,s:{wallet:S.wallet,cons:S.cons,phone:S.phone,smsOn:S.smsOn,interval:S.interval,refs:S.refs,tx:S.tx,orders:S.orders,cart:S.cart}})); }catch(e){} }
+
+/* ---------- ابزارها ---------- */
+function fa(n){ return Number(n).toLocaleString('fa-IR'); }
+function money(n){ return fa(n)+' تومان'; }
+function dateFa(t){ return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{day:'numeric',month:'long'}).format(new Date(t)); }
+function prod(id){ return PRODUCTS.filter(function(p){return p.id===id;})[0]; }
+function cartCount(){ var c=0; for(var k in S.cart){c+=S.cart[k];} return c; }
+function cartTotal(){ var t=0; for(var k in S.cart){ t+=prod(k).price*S.cart[k]; } return t; }
+function perDay(id){ return S.cons[id]||2; }
+
+function cupSvg(color){
+  return '<svg width="46" height="46" viewBox="0 0 48 48" aria-hidden="true">'+
+   '<path d="M10 16h24v12a10 10 0 0 1-10 10h-4A10 10 0 0 1 10 28z" fill="#fff" stroke="#2a1b14" stroke-width="2"/>'+
+   '<path d="M11 21h22v7a9 9 0 0 1-9 9h-4a9 9 0 0 1-9-9z" fill="'+color+'"/>'+
+   '<path d="M34 19h3a4 4 0 0 1 0 9h-3" fill="none" stroke="#2a1b14" stroke-width="2"/>'+
+   '<path d="M17 6c-2 3 2 4 0 7M24 6c-2 3 2 4 0 7" fill="none" stroke="#b9ad9d" stroke-width="2" stroke-linecap="round"/></svg>';
+}
+var ICON = {
+  shop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16l-1.5 10a2 2 0 0 1-2 1.7h-9a2 2 0 0 1-2-1.7z"/><path d="M8 9V7a4 4 0 0 1 8 0v2"/></svg>',
+  cart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 11.5a2 2 0 0 0 2 1.5h7.6a2 2 0 0 0 2-1.5L21 7H6"/></svg>',
+  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg>',
+  wallet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-1z"/><circle cx="16" cy="14" r="1.2"/></svg>'
+};
+
+/* ---------- نمایش ---------- */
+function viewShop(){
+  var list = PRODUCTS.filter(function(p){ return S.cat==='همه' || p.cat===S.cat; });
+  var h = '<div class="cats" role="group" aria-label="دسته‌بندی">'+CATS.map(function(c){
+    return '<button class="cat" data-a="cat" data-v="'+c+'" aria-pressed="'+(S.cat===c)+'">'+c+'</button>';
+  }).join('')+'</div><div class="grid">';
+  h += list.map(function(p){
+    var q = S.cart[p.id]||0;
+    return '<div class="card prod"><div class="ico">'+cupSvg(p.color)+'</div>'+
+      '<h3>'+p.name+'</h3><div class="muted">'+p.sub+'</div>'+
+      '<div class="price">'+fa(p.price)+' <span>تومان</span></div>'+
+      (q? '<div class="row between"><div class="stepper"><button data-a="inc" data-v="'+p.id+'" aria-label="افزودن یکی">+</button><b>'+fa(q)+'</b><button data-a="dec" data-v="'+p.id+'" aria-label="کم کردن یکی">−</button></div></div>'
+        : '<button class="btn" data-a="add" data-v="'+p.id+'">افزودن به سبد</button>')+
+      '</div>';
+  }).join('')+'</div><p class="note">قیمت‌ها نمونه است و قابل تغییر.</p>';
+  return h;
+}
+
+function viewCart(){
+  if(!cartCount()) return '<div class="empty"><p class="big" style="font-size:20px">سبد خرید خالی است</p><p class="muted">از فروشگاه محصول اضافه کنید.</p><br><button class="btn dark small" data-a="tab" data-v="shop">رفتن به فروشگاه</button></div>';
+  var h = '<h2>سبد خرید</h2><div class="stack">';
+  for(var id in S.cart){
+    var p = prod(id), q = S.cart[id];
+    h += '<div class="card row"><div style="width:54px;flex:none">'+cupSvg(p.color)+'</div><div class="grow"><b>'+p.name+'</b><div class="muted">'+p.sub+' · '+money(p.price)+'</div></div>'+
+      '<div class="stepper"><button data-a="inc" data-v="'+id+'" aria-label="افزودن یکی">+</button><b>'+fa(q)+'</b><button data-a="dec" data-v="'+id+'" aria-label="کم کردن یکی">−</button></div></div>';
+  }
+  var total = cartTotal();
+  var use = S.useWallet ? Math.min(S.wallet,total) : 0;
+  h += '</div><div class="card stack" style="margin-top:12px">'+
+    '<div class="row between"><span>جمع سبد</span><b>'+money(total)+'</b></div>'+
+    '<div class="row between"><div><b>پرداخت از کیف پول</b><div class="muted">موجودی: '+money(S.wallet)+'</div></div>'+
+    '<button class="switch" role="switch" aria-checked="'+S.useWallet+'" aria-label="استفاده از کیف پول" data-a="wallet"'+(S.wallet?'':' disabled')+'></button></div>'+
+    (use?'<div class="row between"><span>کسر از کیف پول</span><b class="minus">− '+money(use)+'</b></div>':'')+
+    '<div class="row between" style="border-top:1px solid var(--line);padding-top:10px"><b>مبلغ قابل پرداخت</b><b class="big" style="font-size:20px">'+money(total-use)+'</b></div>'+
+    '<button class="btn dark" data-a="pay">پرداخت با درگاه</button></div>';
+  return h;
+}
+
+function runInfo(it){
+  var p = prod(it.id), pd = perDay(it.id);
+  var total = it.qty*p.cups;
+  var days = (Date.now()-it.date)/DAY;
+  var left = Math.max(0, total - days*pd);
+  return {p:p, pd:pd, total:total, left:left, daysLeft:left/pd, pct:Math.round(left/total*100)};
+}
+function reminders(){
+  var latest = {};
+  S.orders.forEach(function(o){ o.items.forEach(function(i){
+    if(!latest[i.id] || o.date>latest[i.id].date) latest[i.id]={id:i.id,qty:i.qty,date:o.date};
+  }); });
+  var arr = []; for(var k in latest) arr.push(runInfo(latest[k]));
+  arr.sort(function(a,b){return a.daysLeft-b.daysLeft;});
+  return arr;
+}
+function viewRemind(){
+  var list = reminders();
+  var h = '<h2>موجودی و یادآور</h2><div class="stack">';
+  if(!list.length) h += '<div class="empty">بعد از اولین خرید، موجودی قهوه‌تان اینجا دیده می‌شود.</div>';
+  list.forEach(function(r){
+    var d = Math.ceil(r.daysLeft);
+    var low = r.daysLeft<=5;
+    h += '<div class="card stack"><div class="row between"><b>'+r.p.name+'</b>'+
+      (r.left<=0?'<span class="tag low">تمام شده</span>':'<span class="tag '+(low?'low':'ok')+'">'+fa(d)+' روز دیگر تمام می‌شود</span>')+'</div>'+
+      '<div class="bar" aria-hidden="true"><i class="'+(low?'low':'')+'" style="width:'+r.pct+'%"></i></div>'+
+      '<div class="row between"><span class="muted">مصرف روزانه</span>'+
+      '<div class="stepper"><button data-a="pdp" data-v="'+r.p.id+'" aria-label="افزایش مصرف روزانه">+</button><b>'+fa(r.pd)+'</b><button data-a="pdm" data-v="'+r.p.id+'" aria-label="کاهش مصرف روزانه">−</button></div></div>'+
+      '<button class="btn ghost small" style="align-self:flex-start" data-a="reorder" data-v="'+r.p.id+'">سفارش دوباره</button></div>';
+  });
+  h += '</div>';
+
+  var first = list[0];
+  var msg = first ? ('قهوه‌یار: '+first.p.name+' شما '+(first.left<=0?'تمام شده':'حدود '+fa(Math.max(1,Math.ceil(first.daysLeft)))+' روز دیگر تمام می‌شود')+'. اگر می‌خواهید سفارش بدهید، وارد اپ شوید.') : 'قهوه‌یار: قهوه شما در حال اتمام است. اگر می‌خواهید سفارش بدهید، وارد اپ شوید.';
+  h += '<h2 style="margin-top:20px">پیامک یادآور</h2><div class="card stack">'+
+    '<div class="row between"><div><b>ارسال پیامک یادآور</b><div class="muted">اگر قهوه رو به اتمام باشد</div></div>'+
+    '<button class="switch" role="switch" aria-checked="'+S.smsOn+'" aria-label="فعال بودن پیامک" data-a="smson"></button></div>'+
+    '<div><label for="phone">شماره موبایل</label><input id="phone" type="tel" inputmode="tel" placeholder="09123456789" value="'+(S.phone||'')+'"></div>'+
+    '<div><label>هر چند روز یک بار یادآوری شود؟</label><div class="seg">'+[7,14,21,30].map(function(n){
+      return '<button data-a="interval" data-v="'+n+'" aria-pressed="'+(S.interval===n)+'">'+fa(n)+' روز</button>';}).join('')+'</div></div>'+
+    '<div class="muted">پیامک بعدی: '+(S.smsOn?dateFa(Date.now()+S.interval*DAY):'غیرفعال')+'</div>'+
+    '<div class="sms">'+msg+'</div>'+
+    '<button class="btn ghost" data-a="smstest">ارسال پیامک نمونه</button></div>'+
+    '<p class="note">در این نمونه پیامک واقعی ارسال نمی‌شود.</p>';
+  return h;
+}
+
+function viewWallet(){
+  var h = '<div class="card stack"><div class="muted">موجودی کیف پول</div><div class="big">'+money(S.wallet)+'</div>'+
+    '<div class="muted">با معرفی هر دوست، بعد از اولین خریدش '+money(COMMISSION)+' به کیف پول شما اضافه می‌شود و در خرید بعدی خرج می‌شود.</div></div>'+
+    '<h2 style="margin-top:20px">کد معرف شما</h2><div class="card stack"><div class="code" id="mycode">'+S.myCode+'</div>'+
+    '<button class="btn dark" data-a="copy">کپی کد</button></div>'+
+    '<h2 style="margin-top:20px">دوستان معرفی‌شده</h2><div class="card">';
+  if(!S.refs.length) h += '<div class="muted">هنوز کسی با کد شما خرید نکرده است.</div>';
+  S.refs.forEach(function(r){ h += '<div class="tx"><span>'+r.name+'</span><span class="plus">+ '+money(COMMISSION)+'</span></div>'; });
+  h += '</div><button class="btn ghost" style="margin-top:12px" data-a="simref">شبیه‌سازی خرید یک دوست</button>'+
+    '<h2 style="margin-top:20px">تراکنش‌های کیف پول</h2><div class="card">';
+  if(!S.tx.length) h += '<div class="muted">تراکنشی ثبت نشده است.</div>';
+  S.tx.slice().reverse().forEach(function(t){ h += '<div class="tx"><span>'+t.label+' <span class="muted">'+dateFa(t.date)+'</span></span><span class="'+(t.amount>0?'plus':'minus')+'">'+(t.amount>0?'+ ':'− ')+money(Math.abs(t.amount))+'</span></div>'; });
+  h += '</div><p class="note">دکمه شبیه‌سازی فقط برای نمایش نمونه است.</p>';
+  return h;
+}
+
+function viewGateway(){
+  var total = cartTotal(), use = S.useWallet?Math.min(S.wallet,total):0, pay = total-use;
+  return '<div class="modal" role="dialog" aria-modal="true" aria-label="درگاه پرداخت"><div class="sheet stack">'+
+    '<div class="row between"><b style="font-size:17px">درگاه پرداخت (نمونه)</b><button class="btn ghost small" data-a="cancel">انصراف</button></div>'+
+    '<div class="row between"><span>مبلغ</span><b class="big" style="font-size:22px">'+money(pay)+'</b></div>'+
+    '<div class="fake">6037  **** **** 1234</div><div class="row"><div class="fake grow">12 / 05</div><div class="fake grow">CVV2 ***</div></div>'+
+    '<button class="btn" data-a="confirm">پرداخت و ثبت سفارش</button>'+
+    '<p class="note" style="padding:0">این صفحه نمونه است و پولی کم نمی‌شود. در نسخه نهایی به درگاه بانکی واقعی وصل می‌شود.</p></div></div>';
+}
+
+function render(){
+  var tabs = [['shop','فروشگاه'],['cart','سبد'],['remind','یادآور'],['wallet','کیف پول']];
+  var body = S.tab==='shop'?viewShop(): S.tab==='cart'?viewCart(): S.tab==='remind'?viewRemind(): viewWallet();
+  var scroll = document.querySelector('main'); var top = scroll? scroll.scrollTop:0;
+  document.getElementById('app').innerHTML =
+    '<header><div><h1>قهوه‌یار</h1><small>چای، قهوه و پودرهای فوری</small></div><div class="chip-wallet">کیف پول: '+money(S.wallet)+'</div></header>'+
+    '<main>'+body+'</main>'+
+    '<nav aria-label="منوی اصلی">'+tabs.map(function(t){
+      return '<button data-a="tab" data-v="'+t[0]+'"'+(S.tab===t[0]?' aria-current="page"':'')+'>'+ICON[t[0]==='remind'?'bell':t[0]]+t[1]+(t[0]==='cart'&&cartCount()?'<span class="badge">'+fa(cartCount())+'</span>':'')+'</button>';
+    }).join('')+'</nav>'+(S.gateway?viewGateway():'');
+  var m = document.querySelector('main'); if(m && S.keepScroll!==false) m.scrollTop = top;
+  var ph = document.getElementById('phone');
+  if(ph) ph.addEventListener('input', function(){ S.phone = ph.value.replace(/[^0-9+]/g,''); save(); });
+}
+
+var toastTimer;
+function toast(msg){
+  var el = document.getElementById('toast'); el.textContent = msg; el.classList.add('on');
+  clearTimeout(toastTimer); toastTimer = setTimeout(function(){ el.classList.remove('on'); }, 2600);
+}
+
+/* ---------- رویدادها ---------- */
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-a]'); if(!b || b.disabled) return;
+  var a = b.getAttribute('data-a'), v = b.getAttribute('data-v');
+  S.keepScroll = true;
+  if(a==='tab'){ S.tab=v; S.keepScroll=false; }
+  else if(a==='cat'){ S.cat=v; }
+  else if(a==='add'||a==='inc'){ S.cart[v]=(S.cart[v]||0)+1; }
+  else if(a==='dec'){ S.cart[v]=(S.cart[v]||0)-1; if(S.cart[v]<=0) delete S.cart[v]; if(!cartCount()) S.useWallet=false; }
+  else if(a==='wallet'){ S.useWallet=!S.useWallet; }
+  else if(a==='pay'){ S.gateway=true; }
+  else if(a==='cancel'){ S.gateway=false; }
+  else if(a==='confirm'){
+    var total=cartTotal(), use=S.useWallet?Math.min(S.wallet,total):0, items=[];
+    for(var id in S.cart) items.push({id:id,qty:S.cart[id]});
+    if(use){ S.wallet-=use; S.tx.push({label:'خرج در سفارش',amount:-use,date:Date.now()}); }
+    S.orders.push({id:1000+S.orders.length+1,date:Date.now(),items:items,total:total-use});
+    S.cart={}; S.useWallet=false; S.gateway=false; S.tab='remind'; S.keepScroll=false;
+    toast('پرداخت انجام شد. سفارش ثبت شد.');
+  }
+  else if(a==='pdp'){ S.cons[v]=Math.min(20,perDay(v)+1); }
+  else if(a==='pdm'){ S.cons[v]=Math.max(1,perDay(v)-1); }
+  else if(a==='reorder'){ S.cart[v]=(S.cart[v]||0)+1; S.tab='cart'; S.keepScroll=false; toast('به سبد اضافه شد.'); }
+  else if(a==='interval'){ S.interval=Number(v); }
+  else if(a==='smson'){ S.smsOn=!S.smsOn; }
+  else if(a==='smstest'){
+    if(!S.phone||S.phone.replace(/\D/g,'').length<10){ toast('شماره موبایل را کامل وارد کنید.'); return; }
+    toast('پیامک نمونه برای '+S.phone+' ارسال شد (شبیه‌سازی).'); return;
+  }
+  else if(a==='copy'){
+    try{ navigator.clipboard.writeText(S.myCode).then(function(){toast('کد کپی شد.');},function(){toast('کد شما: '+S.myCode);}); }catch(err){ toast('کد شما: '+S.myCode); }
+    return;
+  }
+  else if(a==='simref'){
+    var names=['سارا','علی','مریم','رضا','نیلوفر'];
+    var n = names[S.refs.length % names.length];
+    S.refs.push({name:n+' (با کد شما خرید کرد)'});
+    S.wallet += COMMISSION; S.tx.push({label:'پورسانت معرفی '+n,amount:COMMISSION,date:Date.now()});
+    toast(money(COMMISSION)+' به کیف پول شما اضافه شد.');
+  }
+  save(); render();
+});
+render();
+</script>
+</body>
+</html>
